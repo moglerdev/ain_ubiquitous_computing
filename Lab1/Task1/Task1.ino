@@ -53,7 +53,7 @@ public:
   }
 };
 
-class Blink
+class StatusController
 {
 private:
   LED *led;
@@ -101,8 +101,8 @@ public:
   }
 };
 
-Blink *pitchStatus;
-Blink *volumeStatus;
+StatusController *pitchStatus;
+StatusController *volumeStatus;
 LED *green;
 
 void setup()
@@ -113,8 +113,8 @@ void setup()
   green = new LED(LEDG);
   LED *blue = new LED(LEDB);
 
-  pitchStatus = new Blink(red);
-  volumeStatus = new Blink(blue);
+  pitchStatus = new StatusController(red);
+  volumeStatus = new StatusController(blue);
 
   // Start the IMU
   if (!IMU.begin())
@@ -137,14 +137,14 @@ void setup()
   PDM.onReceive(onPDMdata);
 }
 
-class DebugPrinter
+class Log
 {
 private:
   float pitch;
   float volume;
 
 public:
-  DebugPrinter()
+  Log()
   {
     pitch = 0;
     volume = 0;
@@ -169,7 +169,7 @@ public:
   }
 };
 
-DebugPrinter *debugPrinter = new DebugPrinter();
+Log *log = new Log();
 
 void handlePitchStatus()
 {
@@ -186,7 +186,7 @@ void handlePitchStatus()
 
   imuFilter.updateIMU(gx, gy, gz, ax, ay, az);
   pitch = imuFilter.getPitch(); // Berechnung des Pitch-Winkels
-  debugPrinter->setPitch(pitch);
+  log->setPitch(pitch);
 
   // Pitch überwachen und Red LED toggeln
   if (abs(pitch) > MAX_PITCH)
@@ -210,11 +210,11 @@ void handleVolumeStatus()
     }
   }
 
-  debugPrinter->setVolume(0);
+  log->setVolume(0);
   // LED basierend auf Lautstärke umschalten
   if (maxVolume > MAX_VOLUME)
   {
-    debugPrinter->setVolume(maxVolume);
+    log->setVolume(maxVolume);
     volumeStatus->start();
   }
 }
@@ -235,5 +235,5 @@ void loop()
     green->enable();
   }
 
-  debugPrinter->print();
+  log->print();
 }

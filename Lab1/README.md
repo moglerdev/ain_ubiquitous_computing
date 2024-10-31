@@ -4,37 +4,37 @@
 
 ### Code Implementation for Task 1
 
-To tackle Task 1 effectively, I built on past exercises and incorporated new insights, focusing on creating a modular and organized structure. The code is based around three C++ classes, each designed to handle a distinct aspect of the functionality:
+In developing the code for Task 1, I integrated functionality from previous modules and incorporated new components. The code architecture revolves around three specialized C++ classes designed for modularity.
 
-1. **LED Management Class**: Manages LED operations to avoid repetitive code.
-2. **Blinking Logic Class**: Controls the LED's blinking behavior.
-3. **Print Class**: Prints the required information from the arduino.
+#### Class Design:
 
-### Key Functions
+1. **LED Class**: Controls LED functions, simplifying and reducing redundancy in LED operations.
+2. **Status Controller Class**: Manages blink timing and logic for LEDs, allowing configurable intervals and durations.
+3. **Log Class**: Helps to print the Sensor information out to the Serial Monitor.
 
-To support functionality, I designed two primary functions:
+#### Core Functions:
 
-- **Volume Status Manager**: Monitors and updates volume-related indicators.
-- **Pitch Status Manager**: Manages pitch-related indicators.
+Two primary functions manage the system's core monitoring:
 
-### Setup Phase
+- **handleVolumeStatus**: Monitors and responds to volume levels, triggering alerts if volume exceeds the set threshold.
+- **handlePitchStatus**: Tracks pitch orientation data, enabling alerts when tilt surpasses the maximum allowed angle.
 
-In the setup, I initialized three global objects:
+#### Setup Phase:
 
-- **Two Blinking Class Instances**: These objects handle blinking logic for both the volume and pitch indicators.
-- **One LED Class Instance**: This green LED serves as a system status indicator, staying active to show the system is operating normally.
+During initialization, three global objects are instantiated:
 
-### Main Loop Logic
+- Two **Status Controller Class** objects manage pitch and volume indicators independently.
+- A **LED Class** instance for a green LED signals the system's normal operating state (illuminated when no alerts are active).
 
-The main loop is structured to capture and display the system's status clearly:
+#### Main Loop Execution:
 
-1. **Execute Status Functions**: The loop starts by calling the volume and pitch status functions, ensuring the latest system state is captured.
-  
-2. **Update Blinking Logic**: The blinking objects are then updated based on the current status, activating or toggling the LED states as required.
+Within the main loop, both volume and pitch status functions assess the system's current state, updating the blinking indicators as necessary. Each **Status Controller** instance toggles its associated LED based on updated thresholds.
 
-3. **System Status Indicator Check**: If either the pitch or volume indicators signal an issue, the green LED is turned off to signify an alert state. If both are inactive, the green LED remains on to show normal operation.
+A conditional check then evaluates the status of pitch and volume indicators. If either is active, the green LED turns off, signaling an alert; if both are inactive, it remains on to indicate normal operation.
 
-4. **Print Class**: The `Print` class is responsible for outputting the most recent sensor data to the Serial Monitor.
+#### System Output:
+
+Finally, the Singleton of the **Log Class** displays the current system information, including pitch and volume status, ensuring real-time insight into system conditions.
 
 ### Linux Permissions and Library Challenges in Arduino Development
 
@@ -94,4 +94,4 @@ This simple HTTP handler implementation on the Arduino allows for serving basic 
 
 To control our Arduino LED via the HTTP Server, we need to develop a straightforward HTML interface that includes buttons linking to specific URLs. These URLs allow the server handler to determine the appropriate action. For RGB functionality, we establish six endpoints: three for enabling specific colors and three for disabling them. The HTML interface will feature six buttons, each corresponding to these endpoints, enabling users to easily turn the LEDs on or off.
 
-To implement this functionality in our handler, we first check if the incoming client request begins with `GET /RH`. If it does, this indicates that the user intends to enable (set high) the red LED.
+To implement this functionality in our handler, we check if the incoming client request begins with `GET /RH`. If it does, this indicates that the user intends to enable (set high) the red LED. And for `GET /RL` indicates that the User wants to turn off the LED.
