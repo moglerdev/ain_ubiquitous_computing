@@ -34,7 +34,7 @@ A conditional check then evaluates the status of pitch and volume indicators. If
 
 #### System Output:
 
-Finally, the Singleton of the **Log Class** displays the current system information, including pitch and volume status, ensuring real-time insight into system conditions.
+The Singleton instance of the **Log class** prints the sensor information to the Serial Monitor, including the current pitch and volume status. This information is set and continuously updated within the core functions previously mentioned. At the end of the loop, it prints the gathered information.
 
 ### Linux Permissions and Library Challenges in Arduino Development
 
