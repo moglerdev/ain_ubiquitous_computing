@@ -2,7 +2,7 @@
 
 ## Task 1: Warning System
 
-### Code Implementation for Task 1: Streamlined with C++ Classes and Improved Structure
+### Code Implementation for Task 1
 
 To tackle Task 1 effectively, I built on past exercises and incorporated new insights, focusing on creating a modular and organized structure. The code is based around three C++ classes, each designed to handle a distinct aspect of the functionality:
 
