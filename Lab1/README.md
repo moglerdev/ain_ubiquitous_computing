@@ -1,9 +1,5 @@
 # Lab 1: Introduction
 
-```
-test
-```
-
 ## Task 1: Warning System
 
 ### Code Implementation for Task 1: Streamlined with C++ Classes and Improved Structure
