@@ -1,5 +1,44 @@
 # Labor 02
 
+## Installation and Configuration  
+
+Node-RED was deployed as a Docker container using the official Docker image, with a Docker Compose file simplifying the setup and management. Here's how the Docker Compose file is structured:
+
+### Docker Compose Configuration
+
+```yml
+services:
+  app:
+    image: nodered/node-red:latest
+    ports:
+      - "1880:1880"  # Exposing Node-RED on port 1880
+    volumes:
+      - ./data:/data   # Persisting data in the ./data directory
+      - ./cert:/cert   # Mounting certificates for secure communication
+    env_file:
+      - .env  # Loading environment variables from the .env file
+```
+
+### Environment File
+
+The `.env` file contains sensitive information that should not be publicly exposed. It is used to securely store environment variables, such as credentials and API keys. Here’s an example of how the `.env` file looks:
+
+```
+RED_ADMIN_PWD=$$2y$$08$$SECURE_PASSWORD  # Admin password, encrypted
+RED_SECRET=A_BIG_SECRET                   # Secret key for Node-RED
+RED_WEATHER_API_KEY=MY_API_KEY_FROM_WEATHERAPI_COM  # API key for Weather API
+```
+
+By using Docker Compose and environment files, sensitive data such as passwords and API keys are kept secure and separate from the codebase, which is crucial for maintaining security in production environments.
+
+### Securing the Connection  
+
+Initially, a JavaScript script was created to generate a self-signed certificate with all IPs and hostnames included, avoiding certificate mismatches. However, self-signed certificates cause browsers to flag the connection as insecure unless the certificate is manually added to each machine's certificate store.  
+
+To resolve this issue, a fully signed certificate was used instead. The Node-RED server runs on a public server, but access is restricted to a VPN, ensuring secure connectivity. With this setup, the domain name resolves correctly, and browsers no longer display certificate errors.
+
+The Code is here available: [https://github.com/moglerdev/ain_ubiquitous_computing/blob/main/Lab2/index.js](https://github.com/moglerdev/ain_ubiquitous_computing/blob/main/Lab2/index.js)
+
 ## Exercise 1: Hello World
 
 The first assignment was to learn the basics of Node-RED. It was a simple task involving an inject node and a debug node. The inject node sends a message object with the payload "Hello World" to the debug node. With this toolset, it is possible to debug the flow and, for example, inspect the payload of the message after specific nodes.
@@ -69,16 +108,39 @@ This setup effectively prints both raw and formatted timestamps to the console a
 
 ## Exercise 5: Print Weather information to a Dashboard
 
-Get weather information from an API and also print it to the dashboard, was the last assignment. To get the weather data, the API from `weatherapi.com` was used. Because the Flows are saved in a repository on the internet, the API key is for that not directly set into the flow, is saved by environment variable on the machine. To get the API key, the change node set the property `key`, in the payload, with the environment value `$RED_WEATHER_API_KEY`. The payload is sent to the request node, that appends the payload to the URL, so the API key is always secure. The request node sends then the request to `https://api.weatherapi.com/v1/current.json?q=Konstanz` to receive the current weather in Konstanz in JSON format. After that, the payload is parsed from a JSON string to a normal object. Then the object is sent to three lanes, in the first lane the current temperature should be display as a gauge, in the dashboard. That the gauge node can work with the payload, the payload gets set to the property `msg.payload.current.temp_c` with the change node. To be handover to the gauge node, that is from -20 to +40 degrees Celsius configured and has 10 different colors. In the next lane, the weather should be shown in text form, for this the template node is values can interpret `mustache` code and send it to the text node. Also, it wanted was two charts, one with humidity and temperature. To work with the charts the payload has to be parsed, to parse it correctly the function node was used, with that it is possible to execute custom javascript code. 
+The last assignment involved fetching weather data from an API and displaying it on the dashboard. The `weatherapi.com` API was used, and the API key was securely stored as an environment variable (`$RED_WEATHER_API_KEY`) to avoid exposing it in the flow.  
 
-```js
-const value = msg.payload.current;
-return {
-    payload: {
-        time: new Date(),
-        humidity: value.humidity,
-        temp: value.temp_c
-    }
-}
-```
-The code takes the current weather object, that was received previous from the api. And returns an object with a payload that holds the current time from the execution and the humidity and temp in celsius from the object. The object is delivered to both chart node. The chart node are configured to represent the data as a line and interpolate it linear. Also the new message / data should be appended to the chart, to create a smooth course. The X Axis format is 24h-Format and Timescale Typ and the key (name of property) that is should use is `time` and for y it should use `humidity` for humidity and `temp` for temperature.
+### Steps:  
+
+1. **Fetching Weather Data**:  
+   - A change node sets the `key` property in the payload using the environment variable `$RED_WEATHER_API_KEY`.  
+   - The request node sends a request to `https://api.weatherapi.com/v1/current.json?q=Konstanz`, appending the payload (API key) to the URL.  
+   - The response, in JSON format, is parsed into an object.  
+
+2. **Displaying Temperature as a Gauge**:  
+   - A change node sets `msg.payload` to `msg.payload.current.temp_c`.  
+   - The gauge node displays the temperature, configured with a range of -20 to 40°C and 10 gradient colors.  
+
+3. **Displaying Weather in Text Form**:  
+   - A template node uses Mustache syntax to format the weather data into readable text.  
+   - The formatted text is displayed using a text node.  
+
+4. **Humidity and Temperature Charts**:  
+   - A function node extracts key values from the weather data:  
+     ```js
+     const value = msg.payload.current;
+     return {
+         payload: {
+             time: new Date(),
+             humidity: value.humidity,
+             temp: value.temp_c
+         }
+     };
+     ```  
+   - The function node creates a payload containing the current time, humidity, and temperature in Celsius.  
+   - Two chart nodes receive this data:  
+     - One plots humidity (`y` = `humidity`).  
+     - The other plots temperature (`y` = `temp`).  
+   - Both charts use a linear interpolation, append new data, and format the X-axis in 24-hour time.
+
+This flow displays real-time weather information in multiple formats, updating dynamically for a smooth user experience.
