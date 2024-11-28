@@ -2,14 +2,14 @@
 
 ## Installation and Configuration  
 
-Node-RED was deployed as a Docker container using the official Docker image, with a Docker Compose file simplifying the setup and management. Here's how the Docker Compose file is structured:
+Node-RED was deployed as a Docker container using the official Docker ./assets/image, with a Docker Compose file simplifying the setup and management. Here's how the Docker Compose file is structured:
 
 ### Docker Compose Configuration
 
 ```yml
 services:
   app:
-    image: nodered/node-red:latest
+    ./assets/image: nodered/node-red:latest
     ports:
       - "1880:1880"  # Exposing Node-RED on port 1880
     volumes:
@@ -24,7 +24,7 @@ services:
 The `.env` file contains sensitive information that should not be publicly exposed. It is used to securely store environment variables, such as credentials and API keys. Here’s an example of how the `.env` file looks:
 
 ```
-RED_ADMIN_PWD=$$2y$$08$$SECURE_PASSWORD  # Admin password, encrypted
+RED_ADMIN_PWD=SECURE_PASSWORD  # Admin password, encrypted
 RED_SECRET=A_BIG_SECRET                   # Secret key for Node-RED
 RED_WEATHER_API_KEY=MY_API_KEY_FROM_WEATHERAPI_COM  # API key for Weather API
 ```
@@ -33,17 +33,29 @@ By using Docker Compose and environment files, sensitive data such as passwords 
 
 ### Securing the Connection  
 
-Initially, a JavaScript script was created to generate a self-signed certificate with all IPs and hostnames included, avoiding certificate mismatches. However, self-signed certificates cause browsers to flag the connection as insecure unless the certificate is manually added to each machine's certificate store.  
+Initially, a JavaScript script was created to generate a self-signed certificate with all IPs and hostnames included, avoiding certificate mismatches. However, self-signed certificates cause browsers to flag the connection as insecure unless the certificate is manually added to each machine's certificate store.
+
+![alt text](./assets/image-7.png)
 
 To resolve this issue, a fully signed certificate was used instead. The Node-RED server runs on a public server, but access is restricted to a VPN, ensuring secure connectivity. With this setup, the domain name resolves correctly, and browsers no longer display certificate errors.
 
-The Code is here available: [https://github.com/moglerdev/ain_ubiquitous_computing/blob/main/Lab2/index.js](https://github.com/moglerdev/ain_ubiquitous_computing/blob/main/Lab2/index.js)
+![alt text](./assets/image-6.png)
+
+The Code for creating self signed certificate is here available: [https://github.com/moglerdev/ain_ubiquitous_computing/blob/main/Lab2/index.js](https://github.com/moglerdev/ain_ubiquitous_computing/blob/main/Lab2/index.js)
 
 ## Exercise 1: Hello World
+
+<div style="display: flex; gap: 10px; align-items: center;">
+  <img src="./assets/image.png" alt="alt text" style="width: 60%"/>
+  <img src="./assets/image-12.png" alt="alt text" style="width: 40%"/>
+</div>
+
 
 The first assignment was to learn the basics of Node-RED. It was a simple task involving an inject node and a debug node. The inject node sends a message object with the payload "Hello World" to the debug node. With this toolset, it is possible to debug the flow and, for example, inspect the payload of the message after specific nodes.
 
 ## Exercise 2: Change World to Mars
+
+![alt text](./assets/image-2.png)
 
 In this chapter, the task was to replace the word "World" with "Mars," which requires the use of the change node. The change node can access the `msg`, `flow`, or `global` objects and modify their properties based on their names, even at deeper levels using dot notation. It supports four methods: **change**, **set**, **delete**, and **move**. 
 
@@ -52,9 +64,13 @@ In this chapter, the task was to replace the word "World" with "Mars," which req
 - **Delete**: Removes the specified property.  
 - **Move**: Transfers a property to another object, such as moving a `msg` property to the `flow` or `global` object.
 
+<img src="./assets/image-1.png" style="width: 50%"/>
+
 To test the change node, the final node in the flow is a debug node.
 
 ## Exercise 3: Work with CSV Data from the Web
+
+![alt text](./assets/image-3.png)
 
 The USGS website provides access to the latest significant earthquakes of the current month. To fetch this data, the request node can be used with a specific URL. The request node supports various HTTP methods and custom methods if needed.  
 
@@ -81,6 +97,8 @@ This flow is triggered every 5 minutes by an inject node.
 
 ## Exercise 4: Create a Clock with a Dashboard
 
+![alt text](./assets/image-4.png)
+
 Node-RED does not include a dashboard feature by default. To enable this, the `@flowfuse/node-red-dashboard` package is required, which introduces new nodes for displaying data on a dashboard. In this task, the goal was to display the current date and time. Using the `node-red-contrib-moment` package simplifies working with dates and times by adding specialized nodes. Note that installing packages may automatically include required dependencies.
 
 The flow starts with an inject node configured to fire every second and then splits into four lanes:  
@@ -102,13 +120,19 @@ The flow starts with an inject node configured to fire every second and then spl
    - The epoch is formatted to `dddd, MMMM Do YYYY, h:mm:ss a` (e.g., "Monday, September 25th 2024, 5:42:17 pm").  
    - This includes the day of the week, full month name, day, year, and time in 12-hour format with `am/pm`.  
    - Since the formatted value includes seconds, no filter node is needed, as it updates every second.  
-   - The formatted payload is logged to the console and displayed on the dashboard via another text node.  
+   - The formatted payload is logged to the console and displayed on the dashboard via another text node.
+
+![alt text](./assets/image-8.png)
 
 This setup effectively prints both raw and formatted timestamps to the console and dashboard, showcasing different levels of detail.
 
 ## Exercise 5: Print Weather information to a Dashboard
 
-The last assignment involved fetching weather data from an API and displaying it on the dashboard. The `weatherapi.com` API was used, and the API key was securely stored as an environment variable (`$RED_WEATHER_API_KEY`) to avoid exposing it in the flow.  
+![alt text](./assets/image-5.png)
+
+The last assignment involved fetching weather data from an API and displaying it on the dashboard. The `weatherapi.com` API was used, and the API key was securely stored as an environment variable (`$RED_WEATHER_API_KEY`) to avoid exposing it in the flow. 
+
+<img src="./assets/image-10.png" style="width: 50%"/>
 
 ### Steps:  
 
@@ -124,6 +148,7 @@ The last assignment involved fetching weather data from an API and displaying it
 3. **Displaying Weather in Text Form**:  
    - A template node uses Mustache syntax to format the weather data into readable text.  
    - The formatted text is displayed using a text node.  
+   ![alt text](./assets/image-11.png)
 
 4. **Humidity and Temperature Charts**:  
    - A function node extracts key values from the weather data:  
@@ -142,5 +167,7 @@ The last assignment involved fetching weather data from an API and displaying it
      - One plots humidity (`y` = `humidity`).  
      - The other plots temperature (`y` = `temp`).  
    - Both charts use a linear interpolation, append new data, and format the X-axis in 24-hour time.
+
+![alt text](./assets/image-9.png)   
 
 This flow displays real-time weather information in multiple formats, updating dynamically for a smooth user experience.
