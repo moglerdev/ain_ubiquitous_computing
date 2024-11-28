@@ -1,0 +1,315 @@
+[
+    {
+        "id": "4c5564fd4a09443c",
+        "type": "tab",
+        "label": "Exercise4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f722bdc9d21aeac1",
+        "type": "inject",
+        "z": "4c5564fd4a09443c",
+        "name": "timestamp",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 335,
+        "y": 210,
+        "wires": [
+            [
+                "e5d694553c2c1835",
+                "75383ce9fc23d61f",
+                "6f7e03d0e502da99",
+                "edd1e4c7947a8d8e"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "e5d694553c2c1835",
+        "type": "debug",
+        "z": "4c5564fd4a09443c",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 50,
+        "wires": []
+    },
+    {
+        "id": "75383ce9fc23d61f",
+        "type": "ui-text",
+        "z": "4c5564fd4a09443c",
+        "group": "fd1fef41c411b830",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "EPOCH",
+        "label": "EPOCH",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "x": 800,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "09cfbf0576cd164a",
+        "type": "ui-text",
+        "z": "4c5564fd4a09443c",
+        "group": "fd1fef41c411b830",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "Date Time Format 2",
+        "label": "Date Time Format 2",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "x": 1060,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "ad325d6cb755c036",
+        "type": "ui-text",
+        "z": "4c5564fd4a09443c",
+        "group": "fd1fef41c411b830",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Date Time Format 1",
+        "label": "Date Time Format 1",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "x": 840,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "17f9a889672697f1",
+        "type": "debug",
+        "z": "4c5564fd4a09443c",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 290,
+        "wires": []
+    },
+    {
+        "id": "4d7c4e947046e03e",
+        "type": "debug",
+        "z": "4c5564fd4a09443c",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 430,
+        "wires": []
+    },
+    {
+        "id": "6dfcd40e6f27103d",
+        "type": "rbe",
+        "z": "4c5564fd4a09443c",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 790,
+        "y": 220,
+        "wires": [
+            [
+                "09cfbf0576cd164a"
+            ]
+        ]
+    },
+    {
+        "id": "6f7e03d0e502da99",
+        "type": "moment",
+        "z": "4c5564fd4a09443c",
+        "name": "",
+        "topic": "",
+        "input": "payload",
+        "inputType": "msg",
+        "inTz": "Europa/Berlin",
+        "adjAmount": 0,
+        "adjType": "days",
+        "adjDir": "add",
+        "format": "DD/MM/YY HH:mm:ss",
+        "locale": "en-US",
+        "output": "payload",
+        "outputType": "msg",
+        "outTz": "Europa/Berlin",
+        "x": 560,
+        "y": 280,
+        "wires": [
+            [
+                "6dfcd40e6f27103d",
+                "17f9a889672697f1"
+            ]
+        ]
+    },
+    {
+        "id": "edd1e4c7947a8d8e",
+        "type": "moment",
+        "z": "4c5564fd4a09443c",
+        "name": "",
+        "topic": "",
+        "input": "payload",
+        "inputType": "msg",
+        "inTz": "Europa/Berlin",
+        "adjAmount": 0,
+        "adjType": "days",
+        "adjDir": "add",
+        "format": "dddd, MMMM Do YYYY, h:mm:ss a",
+        "locale": "en-US",
+        "output": "payload",
+        "outputType": "msg",
+        "outTz": "Europa/Berlin",
+        "x": 570,
+        "y": 380,
+        "wires": [
+            [
+                "ad325d6cb755c036",
+                "4d7c4e947046e03e"
+            ]
+        ]
+    },
+    {
+        "id": "fd1fef41c411b830",
+        "type": "ui-group",
+        "name": "Flow Exercise 4",
+        "page": "3618ef28e650a2fb",
+        "width": "8",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "3618ef28e650a2fb",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "fa176559bc25817e",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "4963de6791caef1d",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": 0,
+                "cols": 3
+            },
+            {
+                "name": "Tablet",
+                "px": 576,
+                "cols": 6
+            },
+            {
+                "name": "Small Desktop",
+                "px": 768,
+                "cols": 9
+            },
+            {
+                "name": "Desktop",
+                "px": 1024,
+                "cols": 12
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "fa176559bc25817e",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "showPageTitle": true,
+        "navigationStyle": "default",
+        "titleBarStyle": "default"
+    },
+    {
+        "id": "4963de6791caef1d",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]

@@ -1,0 +1,5 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2024-11-26T13:47:03.695Z,37.0484,136.3492,10,6.1,mww,276,15,1.571,0.8,us,us7000nu90,2024-11-27T04:42:59.883Z,"42 km WNW of Hakui, Japan",earthquake,6.22,1.72,0.036,73,reviewed,us,us
+2024-11-15T05:28:29.617Z,-4.7021,153.3201,51.891,6.6,mww,50,67,1.26,1.35,us,us7000nrwz,2024-11-17T09:55:24.266Z,"123 km ESE of Kokopo, Papua New Guinea",earthquake,8.85,7.797,0.061,26,reviewed,us,us
+2024-11-10T16:49:50.382Z,19.8116,-77.0391,14,6.8,mww,87,25,0.61,0.89,us,us7000nr0v,2024-11-17T01:36:29.648Z,"40 km SSW of Bartolomé Masó, Cuba",earthquake,2.61,1.655,0.032,94,reviewed,us,us
+2024-10-30T20:15:19.812Z,43.5881,-127.7057,10,6,mww,107,69,2.658,0.95,us,us7000np33,2024-11-24T20:25:25.468Z,"272 km W of Bandon, Oregon",earthquake,8.05,1.747,0.036,73,reviewed,us,us

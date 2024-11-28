@@ -1,0 +1,9 @@
+.config.*
+.sessions.*
+.flows.*
+node_modules/
+*.pem
+.npm/
+cert/
+.env.local
+.env

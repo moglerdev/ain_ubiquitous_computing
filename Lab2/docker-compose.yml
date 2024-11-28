@@ -1,0 +1,12 @@
+services:
+  app:
+    image: nodered/node-red:latest
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./data:/data
+      - ./cert:/cert
+    env_file:
+      - .env
+    stdin_open: true # Keep STDIN open
+    tty: true        # Allocate a pseudo-TTY
