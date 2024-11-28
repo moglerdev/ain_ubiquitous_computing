@@ -2,28 +2,83 @@
 
 ## Exercise 1: Hello World
 
-The first assignment was to learn the basic of node red. It was a simple task, with an inject node and debug print node. The inject node send a msg object with the payload "Hello World" to the debug print node. With this tool set, it is possible to debug the flow to see for example what payload the msg has, after specific nodes.
+The first assignment was to learn the basics of Node-RED. It was a simple task involving an inject node and a debug node. The inject node sends a message object with the payload "Hello World" to the debug node. With this toolset, it is possible to debug the flow and, for example, inspect the payload of the message after specific nodes.
 
 ## Exercise 2: Change World to Mars
 
-In this chapter was the task to replace the word "World" to "Mars", this requires the change node. The change node can receive the msg, flow or global object and replace properties by their name deeply. Deeply means, you can select properties deeper in the selected object with a dot. And it exists 4 different methods, change, set, delete and move. Change it is possible to search for a specific string in the payload and replace it with another string. Like in this assignment, to replace "World" to "Mars", it is possible to search for other data types. Another is `set` this allows to set object, string directly in wanted property. The third is delete, and deletes the wanted property. Last one is move, to move property to another object, like msg prop to flow or global object. To test the change node, the last node is a debug print node.
+In this chapter, the task was to replace the word "World" with "Mars," which requires the use of the change node. The change node can access the `msg`, `flow`, or `global` objects and modify their properties based on their names, even at deeper levels using dot notation. It supports four methods: **change**, **set**, **delete**, and **move**. 
+
+- **Change**: Searches for a specific value (e.g., a string) in the payload and replaces it with another value, such as replacing "World" with "Mars" in this task. It can also work with other data types.  
+- **Set**: Assigns a value (e.g., an object or string) directly to a specified property.  
+- **Delete**: Removes the specified property.  
+- **Move**: Transfers a property to another object, such as moving a `msg` property to the `flow` or `global` object.
+
+To test the change node, the final node in the flow is a debug node.
 
 ## Exercise 3: Work with CSV Data from the Web
 
-From the USGS Website, it is possible to receive the latest significant earthquakes in the current month. To get the data, it is possible to use the request node, with the specific URL. The request node also supports multiple HTTP Methods custom methods, if required. The next Field is the URL, where it should send the request. Payload field decide what it should do with the received payload from the previous node. It can be ignored, the default. Appended to the URL as search parameters (e.g. `?foo=bar&moo=coo`), the last one to append the payload as the body content from the HTTP request. To provide a secure connection enable `Enable secure (SSL/TLS) connection`, when checked it appears a new field to change the TLS configuration for example, when a self certificate is in use. `Use authentication` allows appending authentication data for the request, for restricted APIs and websites. It supports the usual methods ` basic`, `digest` and `bearer`. To improve the connection latency and reduce TCP connection, it is possible to use the `keep-alive` from the HTTP Standard, to hold the connection alive. Use a custom proxy for the connection is also possible. If the website responds with a non-ok status, the request node can only send the response to a catch node and not to other nodes, to prevent undefined behaviors. The last checkbox `Disable strict HTTP parsing` is required, if the wanted HTTP server responded data is not from the HTTP standard, often older servers. But can allow an issue that needs to catch. The `Return` selection decides what the endpoint should responses, like normal string (UTF-8) or image (binary buffer), parsed JSON Object. If the Endpoint needs specific HEADERS to process the request, the `Headers` List.
+The USGS website provides access to the latest significant earthquakes of the current month. To fetch this data, the request node can be used with a specific URL. The request node supports various HTTP methods and custom methods if needed.  
 
-To process the responded Data from the Government Server, that is in CSV (Comma-separated values) it exists different parser nodes to change the string in the specific format to a real object in the msg.payload property. In this assignment, the CSV parser node was used. It is customizable to accord requirements, when the separator is not a comma but instead a semicolon (;). In the responses the first row of the CSV is the header, to let the parser get know about this, it is required to check `first row contains column names` field. Also, important is how the node send the output, each row is his own message or the complete data as an array. To process the output correctly, each row is sent as a message.
+Key configurations include:  
+- **URL**: Specifies the endpoint to send the request to.  
+- **Payload**: Determines how the payload from the previous node is used: ignored (default), appended as URL search parameters (e.g., `?foo=bar&moo=coo`), or sent as the HTTP body.  
+- **Secure Connection**: Enabling SSL/TLS adds a field to adjust TLS settings, e.g., for self-signed certificates.  
+- **Authentication**: Supports `basic`, `digest`, and `bearer` methods for restricted APIs.  
+- **Keep-Alive**: Keeps the connection open to improve latency.  
+- **Custom Proxy**: Allows using a proxy server.  
+- **Non-OK Responses**: These are sent only to a catch node to avoid undefined behaviors.  
+- **Strict HTTP Parsing**: Disabling this helps with non-standard HTTP responses, typically from older servers, but may introduce issues.  
+- **Return Type**: Specifies the response format, e.g., string (UTF-8), binary buffer (image), or JSON.  
+- **Headers**: Allows adding custom headers for the request.  
 
-In the next step, the last node sends his msg to a print node, to print the processed data and to a switch node. The switch node allows continuing the flow if a specific condition is true. Here it is configured to test is the payload from the msg, the property mag is equal or higher than 6. Were the condition true, the next change node replace the payload to panic and with the debug node prints it to the console.
+The USGS server responds with data in CSV format. To process it, a CSV parser node is used, converting the string into an object in the `msg.payload`. Customization options include:  
+- **Separator**: Default is a comma, but it can be set to other delimiters (e.g., semicolon).  
+- **Header Row**: Checking `first row contains column names` ensures proper parsing.  
+- **Output Mode**: Can send each row as a separate message or the entire data as an array. For this task, each row is sent as an individual message.  
 
-This flow gets executed every 5 minute from the inject node.
+In the next step, the parsed data is sent to a debug node for logging and to a switch node. The switch node checks whether the `mag` property in the payload is greater than or equal to 6. If true, a change node updates the payload to "panic," which is then printed using another debug node.
+
+This flow is triggered every 5 minutes by an inject node.
 
 ## Exercise 4: Create a Clock with a Dashboard
 
-Node RED supports not directly a dashboard, to add the feature the @flowfuse/node-red-dashboard is required. This adds also new nodes, to support to print the data to the dashboard. In this task, the dashboard should print the date and time. With the `node-red-contrib-moment` it is easier to work with date and time in node-red with the also added nodes from the package. To be notified, the installation of package can also add package that are dependencies in the background if required. 
+Node-RED does not include a dashboard feature by default. To enable this, the `@flowfuse/node-red-dashboard` package is required, which introduces new nodes for displaying data on a dashboard. In this task, the goal was to display the current date and time. Using the `node-red-contrib-moment` package simplifies working with dates and times by adding specialized nodes. Note that installing packages may automatically include required dependencies.
 
-After the inject node, that get executed every second, the flow splits in four lanes. One to print the payload from the inject node, that is the epoch, means how many microseconds are passed since 01.01.1970 00:00. The second lane, supports to print the epoch to the dashboard. To use the text node, it is required to have a configured page with a group in the Dashboard Layout, that was added from the previous installed flow fusepackage. Afterward the added text node requires to be configured in which group it should appear. Also, the Label for the Text and how it should be represented in the frontend, the text node use for the value of the payload in the msg. In the third lane the payload, means the epoch that is only a big integer, should be formatted by `Date/Time Formatter` node from the `moment` package. The epoch is formatted to `DD/MM/YY HH:mm` the normal European standard, day, month and last year, but only the last two numbers. The time is formatted in normal 24h-Format, this is by the two uppercase `H`, if there were lower case it is in 12h-Format. The payload is printed to the console, and before it is printed with the next text node, it gets first filtered. The filter node allows ending the flow to the next node until a condition is happened. Cause the formatted payload does not print the seconds, and means it does only change every minute the filter blocks the flow until the formatted payload get changed, cause to inject fires every second, but the string only changes every minute. After the filter node the payload should be printed to the dashboard, also with a text node. The last lane has also a formatted node that format the epoch to `dddd, MMMM Do YYYY, h:mm:ss a`, first the day of the week then month in text, the day and year, the last prints the time in 12h-Format and the `a` is for `am` or `pm`. Without a filter node, because the payload has seconds in it and change every second like the inject fires. Also, the formatted payload is printed in the console and written to the dashboard.
+The flow starts with an inject node configured to fire every second and then splits into four lanes:  
+
+1. **Epoch Logging**: The inject node’s payload, the epoch (time in milliseconds since 01/01/1970 00:00), is logged to the console.  
+
+2. **Epoch to Dashboard**:  
+   - A text node is used to display the epoch on the dashboard.  
+   - For this, the dashboard layout must include a configured page with a group (set up via the FlowFuse package).  
+   - The text node is configured with a label, group, and a binding to the payload.  
+
+3. **Formatted Date/Time with Filtering**:  
+   - The epoch is formatted to `DD/MM/YY HH:mm` (European standard with a 24-hour clock) using the **Date/Time Formatter** node from the Moment package.  
+   - The formatted payload is logged to the console and then sent to a filter node.  
+   - The filter ensures the flow continues only when the formatted value changes (every minute), blocking unnecessary updates caused by the inject node firing every second.  
+   - After filtering, the payload is displayed on the dashboard via a text node.  
+
+4. **Detailed Date/Time**:  
+   - The epoch is formatted to `dddd, MMMM Do YYYY, h:mm:ss a` (e.g., "Monday, September 25th 2024, 5:42:17 pm").  
+   - This includes the day of the week, full month name, day, year, and time in 12-hour format with `am/pm`.  
+   - Since the formatted value includes seconds, no filter node is needed, as it updates every second.  
+   - The formatted payload is logged to the console and displayed on the dashboard via another text node.  
+
+This setup effectively prints both raw and formatted timestamps to the console and dashboard, showcasing different levels of detail.
 
 ## Exercise 5: Print Weather information to a Dashboard
 
-Get weather information from an API and also print it to the dashboard, was the last assignment. To get the weather data, the API from `weatherapi.com` was used. Because the Flows are saved in a repository on the internet, the API key is for that not directly set into the flow, is saved by environment variable on the machine. To get the API key, the change node set the property `key`, in the payload, with the environment value `$RED_WEATHER_API_KEY`. The payload is sent to the request node, that appends the payload to the URL, so the API key is always secure. The request node sends then the request to `https://api.weatherapi.com/v1/current.json?q=Konstanz` to receive the current weather in Konstanz in JSON format. After that, the payload is parsed from a JSON string to a normal object. Then the object is sent to three lanes, in the first lane the current temperature should be display as a gauge, in the dashboard. That the gauge node can work with the payload, the payload gets set to the property `msg.payload.current.temp_c` with the change node. To be handover to the gauge node, that is from -20 to +40 degrees Celsius configured and has 10 different colors. In the next lane, the weather should be shown in text form, for this the template node is values can interpret `mustache` code and send it to the text node. Also, it wanted was two charts, one with humidity and temperature. The 
+Get weather information from an API and also print it to the dashboard, was the last assignment. To get the weather data, the API from `weatherapi.com` was used. Because the Flows are saved in a repository on the internet, the API key is for that not directly set into the flow, is saved by environment variable on the machine. To get the API key, the change node set the property `key`, in the payload, with the environment value `$RED_WEATHER_API_KEY`. The payload is sent to the request node, that appends the payload to the URL, so the API key is always secure. The request node sends then the request to `https://api.weatherapi.com/v1/current.json?q=Konstanz` to receive the current weather in Konstanz in JSON format. After that, the payload is parsed from a JSON string to a normal object. Then the object is sent to three lanes, in the first lane the current temperature should be display as a gauge, in the dashboard. That the gauge node can work with the payload, the payload gets set to the property `msg.payload.current.temp_c` with the change node. To be handover to the gauge node, that is from -20 to +40 degrees Celsius configured and has 10 different colors. In the next lane, the weather should be shown in text form, for this the template node is values can interpret `mustache` code and send it to the text node. Also, it wanted was two charts, one with humidity and temperature. To work with the charts the payload has to be parsed, to parse it correctly the function node was used, with that it is possible to execute custom javascript code. 
+
+```js
+const value = msg.payload.current;
+return {
+    payload: {
+        time: new Date(),
+        humidity: value.humidity,
+        temp: value.temp_c
+    }
+}
+```
+The code takes the current weather object, that was received previous from the api. And returns an object with a payload that holds the current time from the execution and the humidity and temp in celsius from the object. The object is delivered to both chart node. The chart node are configured to represent the data as a line and interpolate it linear. Also the new message / data should be appended to the chart, to create a smooth course. The X Axis format is 24h-Format and Timescale Typ and the key (name of property) that is should use is `time` and for y it should use `humidity` for humidity and `temp` for temperature.
