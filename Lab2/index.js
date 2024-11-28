@@ -46,11 +46,17 @@ function createCertificate() {
     });
 }
 
-createCertificate().then((pems) => {
-    return Promise.all([
-        fs.writeFile("./cert/key.pem", pems.key),
-        fs.writeFile("./cert/cert.pem", pems.cert)
-    ]);
-}).then(() => {
-    console.log("Certificate created")
-});
+// Generate and save the certificate
+(async () => {
+    try {
+        const pems = await createCertificate();
+        await fs.mkdir("./cert", { recursive: true }); // Ensure directory exists
+        await Promise.all([
+            fs.writeFile("./cert/key.pem", pems.key),
+            fs.writeFile("./cert/cert.pem", pems.cert),
+        ]);
+        console.log("Certificate created successfully in './cert/'");
+    } catch (err) {
+        console.error("Error creating certificate:", err);
+    }
+})();
