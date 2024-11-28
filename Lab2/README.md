@@ -2,14 +2,14 @@
 
 ## Installation and Configuration  
 
-Node-RED was deployed as a Docker container using the official Docker ./assets/image, with a Docker Compose file simplifying the setup and management. Here's how the Docker Compose file is structured:
+Node-RED was deployed as a Docker container using the official Docker image, with a Docker Compose file simplifying the setup and management. Here's how the Docker Compose file is structured:
 
 ### Docker Compose Configuration
 
 ```yml
 services:
   app:
-    ./assets/image: nodered/node-red:latest
+    image: nodered/node-red:latest
     ports:
       - "1880:1880"  # Exposing Node-RED on port 1880
     volumes:
@@ -50,8 +50,9 @@ The Code for creating self signed certificate is here available: [https://github
   <img src="./assets/image-12.png" alt="alt text" style="width: 40%"/>
 </div>
 
-
 The first assignment was to learn the basics of Node-RED. It was a simple task involving an inject node and a debug node. The inject node sends a message object with the payload "Hello World" to the debug node. With this toolset, it is possible to debug the flow and, for example, inspect the payload of the message after specific nodes.
+
+![alt text](./assets/image-13.png)
 
 ## Exercise 2: Change World to Mars
 
@@ -64,7 +65,10 @@ In this chapter, the task was to replace the word "World" with "Mars," which req
 - **Delete**: Removes the specified property.  
 - **Move**: Transfers a property to another object, such as moving a `msg` property to the `flow` or `global` object.
 
-<img src="./assets/image-1.png" style="width: 50%"/>
+<div style="display: flex; gap: 10px; align-items: center;">
+  <img src="./assets/image-1.png" alt="alt text" style="width: 70%"/>
+  <img src="./assets/image-14.png" alt="alt text" style="width: 30%"/>
+</div>
 
 To test the change node, the final node in the flow is a debug node.
 
@@ -95,6 +99,8 @@ In the next step, the parsed data is sent to a debug node for logging and to a s
 
 This flow is triggered every 5 minutes by an inject node.
 
+![alt text](./assets/image-15.png)
+
 ## Exercise 4: Create a Clock with a Dashboard
 
 ![alt text](./assets/image-4.png)
@@ -122,7 +128,10 @@ The flow starts with an inject node configured to fire every second and then spl
    - Since the formatted value includes seconds, no filter node is needed, as it updates every second.  
    - The formatted payload is logged to the console and displayed on the dashboard via another text node.
 
-![alt text](./assets/image-8.png)
+<div style="display: flex; gap: 10px; align-items: center;">
+  <img src="./assets/image-8.png" alt="alt text" style="width: 70%"/>
+  <img src="./assets/image-16.png" alt="alt text" style="width: 30%"/>
+</div>
 
 This setup effectively prints both raw and formatted timestamps to the console and dashboard, showcasing different levels of detail.
 
