@@ -4,9 +4,12 @@ services:
     ports:
       - "1880:1880"
     volumes:
-      - ./data:/data
-      - ./cert:/cert
+      - node_red_data:/data
     env_file:
       - .env
     stdin_open: true # Keep STDIN open
     tty: true        # Allocate a pseudo-TTY
+
+
+volumes:
+  node_red_data:

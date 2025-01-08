@@ -337,7 +337,7 @@
         "type": "function",
         "z": "b2d44119e719e3aa",
         "name": "function 1",
-        "func": "const values = msg.payload.forecast.forecastday[0].hour;\n\nconst payload = values.map(d => ({\n    x: new Date(d.time),\n    humidity: d.humidity,\n    temp: d.temp_c\n})).filter(d => d.x <= new Date());\n\nreturn {\n    payload\n}",
+        "func": "const values = msg.payload.forecast.forecastday.map(x => x.hour).flat();\n\nconst payload = values.map(d => ({\n    x: new Date(d.time),\n    humidity: d.humidity,\n    temp: d.temp_c\n})).filter(d => d.x >= new Date());\n\nreturn {\n    payload\n}",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
