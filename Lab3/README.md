@@ -1,5 +1,5 @@
 # Ubiquitous Computing: Lab 3
-
+> Christopher R. Jäger - Ma.No. 304874
 ## Exercise 1: Building an Arduino-Node-Red Circuit for LED and Button Synchronization
 
 ### Task 1: Physical Button with Node Red Dashboard
@@ -14,17 +14,13 @@ The setup involved configuring the Arduino to respond to both the physical butto
 
 To enable communication between the Arduino and Node-RED, the serial bus had to be properly configured. On Windows, the Arduino connects through `COM_` devices, while on Linux, it uses `/dev/ttyUSB_`, with the underscore replaced by the port number. The baud rate was set to `9600` to match the data transmission speed of the Arduino, ensuring smooth communication between the two systems.
 
-<img src="assets/NR-Serial-In.jpeg" alt="Mid Temp" style="max-width: 44%;">
+![x|333](assets/NR-Serial-In.jpeg)
 
 The dashboard displays a light bulb and a switch to turn it on and off. The issue arises because the virtual switch and the physical button are not synchronized. As a result, when you press the button, both the virtual and physical lights turn on, but the switch does not reflect the correct state. Consequently, when the switch is pressed again, nothing happens, and vice versa. This occurs because when the button is pressed, the signal from the serial port only updates the light bulb and not the switch.
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="assets/Ex1_Dashboard_LightOff.jpeg" alt="Mid Temp" style="max-width: 33%;">
-  <img src="assets/Ex1_Dashboard_LightOn_SwitchOff.jpeg" alt="High Temp" style="max-width: 33%;">
-  <img src="assets/Ex1_Dashboard_LightOn.jpeg" alt="Low Temp" style="max-width: 33%;">
-</div>
-
-
+| ![](assets/Ex1_Dashboard_LightOff.jpeg) | ![](assets/Ex1_Dashboard_LightOn.jpeg) | ![](assets/Ex1_Dashboard_LightOn_SwitchOff.jpeg) |
+| --------------------------------------- | -------------------------------------- | ------------------------------------------------ |
+|                                         |                                        |                                                  |
 ### Task 2: Synchronized Node-RED and Arduino Flow
 
 ![alt text](assets/Ex1_NR_Sync.jpeg)
@@ -83,7 +79,7 @@ By combining the physical button, serial communication, and Node-RED’s interfa
 
 ### Problems and Obstacles
 
-Node-RED is running in a Docker container, which means it does not have direct access to the serial port (USB) where the Arduino is connected. To enable access, the `docker-compose` file from the previous task needed to be updated as follows:
+This Node-RED is running in a Docker container, which means it does not have direct access to the serial port (USB) where the Arduino is connected. To enable access, the `docker-compose` file from the previous laboratory needed to be updated as follows:
 
 ```yml
 services:
@@ -109,6 +105,9 @@ The update includes piping the device/port to the container using the `devices` 
 By default, the Node-RED instance in the container does not run as the root user. This caused some issues, but the solution was straightforward: override the user to `root` in the `docker-compose` file. 
 
 Running Node-RED as `root` is not recommended in production environments. For enhanced security, the Docker image should be modified to include the running user in the system group `dialout`, granting access to serial ports without requiring root privileges. This adjustment reduces security risks while maintaining functionality.
+
+<div>
+</div>
 
 ## Exercise 2: Push measured Temperature to Node-RED
 
@@ -140,15 +139,12 @@ In the `loop` function, the current temperature is read and stored in a local va
 
 In Node-RED, the serial node receives the temperature data from the Arduino and outputs it to the debug console. This data is also sent to a gauge node to display the current temperature in real-time and a chart node to visualize the historical temperature trends.
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="assets/Ex2_Dashboard_HighTemp.jpeg" alt="High Temp" style="max-width: 33%;">
-  <img src="assets/Ex2_Dashboard_MidTemp.jpeg" alt="Mid Temp" style="max-width: 33%;">
-  <img src="assets/Ex2_Dashboard_LowTemp.jpeg" alt="Low Temp" style="max-width: 33%;">
-</div>
 
+| ![srx](./assets/Ex2_Dashboard_HighTemp.jpeg) | ![](assets/Ex2_Dashboard_MidTemp.jpeg) | ![](./assets/Ex2_Dashboard_LowTemp.jpeg) |
+| -------------------------------------------- | -------------------------------------- | ---------------------------------------- |
 ## Exercise 3: Publish Measured Temperature to MQTT
 
-Building on the previous exercise, the system is enhanced by integrating the MQTT protocol to enable a cloud-based dashboard. For this, we use **Datacake** to create an easy-to-use dashboard. To allow Datacake to access the measured values, the temperature data must be published via MQTT.
+Building on the previous exercise, the system is enhanced by integrating the MQTT protocol to enable a cloud-based dashboard. For this, **Datacake** is used to create an easy-to-use dashboard. To allow Datacake to access the measured values, the temperature data must be published via MQTT.
 
 To provide a simple and reliable MQTT service, **HiveMQ Cloud** is used. This platform allows publishing and subscribing to MQTT topics over a secure connection using TLS.
 
@@ -156,16 +152,13 @@ Both Datacake and HiveMQ Cloud require user accounts, but neither requires credi
 
 ### HiveMQ Setup
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="assets/Ex3_HiveMQ_Cluster.jpg" alt="High Temp" style="max-width: 55%;">
-  <img src="assets/Ex3_Hive_Cred.jpeg" alt="Mid Temp" style="max-width: 44%;">
-</div>
-
+| ![](assets/Ex3_HiveMQ_Cluster.jpg) | ![](assets/Ex3_Hive_Cred.jpeg) |
+| ---------------------------------- | ------------------------------ |
 In HiveMQ, a new (free) cluster is created using the "Create New Cluster" option in the HiveMQ dashboard, selecting the **free serverless version**. 
 
 To enable publishing and subscribing to the service, new credentials are added. For simplicity in this exercise, security was not a focus, so a single credential with full permissions (`PUBLISH_SUBSCRIBE`) was created and used for all operations.
 
-<img src="assets/Ex3_NodeRed_MQTT_Config.jpg" alt="Mid Temp" style="max-width: 44%;">
+![x|333](assets/Ex3_NodeRed_MQTT_Config.jpg)
 
 To establish an MQTT connection in Node-RED, an MQTT broker configuration is required. The **server URL** and **port** are copied from the HiveMQ dashboard. 
 
@@ -210,19 +203,14 @@ The function returns an array of objects. Each object specifies the `device` (in
 
 ![datacake fields](./assets/Ex3_Datacake_Fields.jpg)
 
-To use the values, two `Fields` are added: one for the temperature in Celsius and another for Fahrenheit. Both fields are of the `float` type, with the unit set to `°C` for Celsius and `°F` for Fahrenheit, respectively. This allows DataCake to handle and display the temperature values in both units.
+To use the values, two `Fields` are added: one for the temperature in Celsius and another for Fahrenheit. Both fields are of the `float` type, with the unit set to `°C` for Celsius and `°F` for Fahrenheit, respectively.
 
 ### Visualizing Data with DataCake
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="assets/Ex3_Datacake_Dashboard.jpeg" alt="High Temp" style="max-width: 55%;">
-  <div style="max-width: 44%;">
-    <img src="assets/Ex3_DataCake_Data.png" alt="Mid Temp">
-  </div>
-</div>
-
 A new Dashboard is added to DataCake to provide a user-friendly interface for visualizing the temperature values. The dashboard is organized into three rows. The first row displays a table that shows the maximum, minimum, and current temperature in Celsius, giving an overview of the temperature range and the latest reading. The second row features a gauge-like interface to display the current temperature in Celsius, while a chart on the right side shows the historical temperature data over time. The third row is similar to the second but shows the temperature in Fahrenheit, with a gauge and chart setup to allow users to monitor the temperature in both Celsius and Fahrenheit. This layout makes it easy to track and compare temperature values in a clear and intuitive way.
 
+| ![](assets/Ex3_Datacake_Dashboard.jpeg) | ![y\|300](assets/Ex3_DataCake_Data.png) |
+| --------------------------------------- | --------------------------------------- |
 ### Problems
 
 An issue arose where the exported flow did not include the credentials, resulting in them being empty after importing into another Node-RED instance. Node-RED threw an error, unable to connect to the MQTT server, but it wasn't immediately clear that the problem was related to authentication. It took some time to identify the root cause.
