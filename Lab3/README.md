@@ -16,7 +16,6 @@ To enable communication between the Arduino and Node-RED, the serial bus had to 
 
 <img src="assets/NR-Serial-In.jpeg" alt="Mid Temp" style="max-width: 44%;">
 
-
 The dashboard displays a light bulb and a switch to turn it on and off. The issue arises because the virtual switch and the physical button are not synchronized. As a result, when you press the button, both the virtual and physical lights turn on, but the switch does not reflect the correct state. Consequently, when the switch is pressed again, nothing happens, and vice versa. This occurs because when the button is pressed, the signal from the serial port only updates the light bulb and not the switch.
 
 <div style="display: flex; justify-content: space-between;">
@@ -82,15 +81,38 @@ The second part of the `loop` function handled incoming commands from Node-RED o
 
 By combining the physical button, serial communication, and Node-RED’s interface, this exercise demonstrated how to create a responsive system for LED control. The result was a functional and interactive circuit that integrated hardware and software seamlessly, showcasing the power of ubiquitous computing in action.
 
+### Problems and Obstacles
+
+Node-RED is running in a Docker container, which means it does not have direct access to the serial port (USB) where the Arduino is connected. To enable access, the `docker-compose` file from the previous task needed to be updated as follows:
+
+```yml
+services:
+  app:
+    image: nodered/node-red:latest
+    ports:
+      - "1880:1880"
+    volumes:
+      - node_red_data:/data
+    env_file:
+      - .env
+    # Added to enable serial port access
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    user: root
+    # End of new configuration
+volumes:
+  node_red_data:
+```
+
+The update includes piping the device/port to the container using the `devices` configuration. This maps the host's `/dev/ttyACM0` device to the container, making it accessible with the same path and name.
+
+By default, the Node-RED instance in the container does not run as the root user. This caused some issues, but the solution was straightforward: override the user to `root` in the `docker-compose` file. 
+
+Running Node-RED as `root` is not recommended in production environments. For enhanced security, the Docker image should be modified to include the running user in the system group `dialout`, granting access to serial ports without requiring root privileges. This adjustment reduces security risks while maintaining functionality.
+
 ## Exercise 2: Push measured Temperature to Node-RED
 
-![alt text](./assets/Ex2_Flow.jpeg)
-
-<div style="display: flex; justify-content: space-between;">
-  <img src="assets/Ex2_Dashboard_HighTemp.jpeg" alt="High Temp" style="max-width: 33%;">
-  <img src="assets/Ex2_Dashboard_MidTemp.jpeg" alt="Mid Temp" style="max-width: 33%;">
-  <img src="assets/Ex2_Dashboard_LowTemp.jpeg" alt="Low Temp" style="max-width: 33%;">
-</div>
+In this exercise, the integrated IMU chip is used to measure the temperature and display it on a Node-RED web dashboard. To achieve this, a new Arduino code is required.
 
 ```c
 #include <WiFiNINA.h>
@@ -110,10 +132,101 @@ void loop() {
 }
 ```
 
-## Exercise 3: Publish measured Temperature to MQTT
+In the `setup` function, the serial communication is initialized with a baud rate of `9600`. After that, the IMU is initialized and checked for successful setup. If the initialization fails, an error message is printed to the serial port.
+
+In the `loop` function, the current temperature is read and stored in a local variable, then printed to the serial output. To minimize the frequency of writes to the serial port, a delay of 1 second is introduced, ensuring the current measured value is printed only once per second.
+
+![alt text](./assets/Ex2_Flow.jpeg)
+
+In Node-RED, the serial node receives the temperature data from the Arduino and outputs it to the debug console. This data is also sent to a gauge node to display the current temperature in real-time and a chart node to visualize the historical temperature trends.
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="assets/Ex2_Dashboard_HighTemp.jpeg" alt="High Temp" style="max-width: 33%;">
+  <img src="assets/Ex2_Dashboard_MidTemp.jpeg" alt="Mid Temp" style="max-width: 33%;">
+  <img src="assets/Ex2_Dashboard_LowTemp.jpeg" alt="Low Temp" style="max-width: 33%;">
+</div>
+
+## Exercise 3: Publish Measured Temperature to MQTT
+
+Building on the previous exercise, the system is enhanced by integrating the MQTT protocol to enable a cloud-based dashboard. For this, we use **Datacake** to create an easy-to-use dashboard. To allow Datacake to access the measured values, the temperature data must be published via MQTT.
+
+To provide a simple and reliable MQTT service, **HiveMQ Cloud** is used. This platform allows publishing and subscribing to MQTT topics over a secure connection using TLS.
+
+Both Datacake and HiveMQ Cloud require user accounts, but neither requires credit card information. This is convenient as it ensures no unexpected charges can occur.
+
+### HiveMQ Setup
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="assets/Ex3_HiveMQ_Cluster.jpg" alt="High Temp" style="max-width: 55%;">
+  <img src="assets/Ex3_Hive_Cred.jpeg" alt="Mid Temp" style="max-width: 44%;">
+</div>
+
+In HiveMQ, a new (free) cluster is created using the "Create New Cluster" option in the HiveMQ dashboard, selecting the **free serverless version**. 
+
+To enable publishing and subscribing to the service, new credentials are added. For simplicity in this exercise, security was not a focus, so a single credential with full permissions (`PUBLISH_SUBSCRIBE`) was created and used for all operations.
+
+<img src="assets/Ex3_NodeRed_MQTT_Config.jpg" alt="Mid Temp" style="max-width: 44%;">
+
+To establish an MQTT connection in Node-RED, an MQTT broker configuration is required. The **server URL** and **port** are copied from the HiveMQ dashboard. 
+
+For a secure connection, a TLS configuration is added to enable end-to-end encryption. No specific certificate is uploaded; instead, the configuration is set to verify the server's certificate. This works because HiveMQ uses a trusted certificate authority, not a self-signed certificate.
+
+Authentication is handled in the **Security** tab of the MQTT configuration, where the previously created **username** and **password** are entered. 
+
+### Publishing the Data with MQTT
 
 ![alt text](./assets/Ex3_Flow.jpeg)
 
-![alt text](./assets/Ex3_Datacake_Dashboard.jpeg)
+First, the serial data is read using the **serial out node** in Node-RED. To minimize unnecessary messages, the data is filtered so that only changes in the temperature value trigger an action. When a new value is detected, it is published to the MQTT topic `TEMPERATURE`.
 
-![alt text](./assets/Ex3_Hive_Cred.jpeg)
+### Setting Up DataCake
+
+In DataCake, the first step is to create a UI, which requires the creation of a device. DataCake offers a variety of device types, and for this task, the `API` device type was chosen to subscribe to MQTT topics.
+
+After creating the device, some configuration steps are necessary. You need to set up a new MQTT server to allow DataCake to connect. The same connection values and credentials used in Node-RED were applied here. However, DataCake only requires subscription permissions. For added security in production environments, it's recommended to use separate credentials from Node-RED with only subscription permissions.
+
+```js
+function Decoder(topic, payload) {
+    var temperature_c = payload;
+    var temperature_f = (payload * 9/5) + 32;
+    return [
+        {
+            device: "088b19d5-82f9-4643-830a-018b49ce53a6",
+            field: "TEMPERATURE",
+            value: temperature_c
+        },
+        {
+            device: "088b19d5-82f9-4643-830a-018b49ce53a6",
+            field: "TEMPERATURE_F",
+            value: temperature_f
+        }
+    ];
+}
+```
+
+To ensure DataCake can process the data, an MQTT Uplink Decoder is required. This allows subscribing to specific topics (or all topics) and sending either the raw or transformed data to a specific device. A JavaScript function called `Decoder` is created, which takes two parameters: the current topic and the payload. In this case, the payload is the only relevant part, as it represents the numerical value of the temperature measured by the Arduino. The temperature is initially in Celsius, and for demonstration purposes, the function also calculates the Fahrenheit equivalent.
+
+The function returns an array of objects. Each object specifies the `device` (indicating which device the value is sent to), the `field` (which is similar to the topic but is used only by DataCake), and the `value` (which represents the current temperature value).
+
+![datacake fields](./assets/Ex3_Datacake_Fields.jpg)
+
+To use the values, two `Fields` are added: one for the temperature in Celsius and another for Fahrenheit. Both fields are of the `float` type, with the unit set to `°C` for Celsius and `°F` for Fahrenheit, respectively. This allows DataCake to handle and display the temperature values in both units.
+
+### Visualizing Data with DataCake
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="assets/Ex3_Datacake_Dashboard.jpeg" alt="High Temp" style="max-width: 55%;">
+  <div style="max-width: 44%;">
+    <img src="assets/Ex3_DataCake_Data.png" alt="Mid Temp">
+  </div>
+</div>
+
+A new Dashboard is added to DataCake to provide a user-friendly interface for visualizing the temperature values. The dashboard is organized into three rows. The first row displays a table that shows the maximum, minimum, and current temperature in Celsius, giving an overview of the temperature range and the latest reading. The second row features a gauge-like interface to display the current temperature in Celsius, while a chart on the right side shows the historical temperature data over time. The third row is similar to the second but shows the temperature in Fahrenheit, with a gauge and chart setup to allow users to monitor the temperature in both Celsius and Fahrenheit. This layout makes it easy to track and compare temperature values in a clear and intuitive way.
+
+### Problems
+
+An issue arose where the exported flow did not include the credentials, resulting in them being empty after importing into another Node-RED instance. Node-RED threw an error, unable to connect to the MQTT server, but it wasn't immediately clear that the problem was related to authentication. It took some time to identify the root cause.
+
+The issue stemmed from the limitations of the free services provided by HiveMQ and DataCake. HiveMQ is restricted by the number of connections and the amount of transferred data, while DataCake limits the number of messages that can be sent via MQTT. During the initial stages of development, data was being transmitted every second, but DataCake only allows 500 messages per day. This limitation halted the development process until the message counter was reset. To resolve this, a filter was implemented in Node-RED to only send data when the values changed.
+
+Additionally, DataCake encountered an issue subscribing to the `TEMPERATURE` topic. Due to time constraints, the workaround was to have the DataCake MQTT uplink subscribe to all topics. This was acceptable for the exercise, as there was only one topic. However, in production environments, this approach could lead to undefined behaviors and should be further investigated in the future.
