@@ -1,6 +1,6 @@
 [
     {
-        "id": "0e31d2eccaea29e9",
+        "id": "4a48d8ab1d6e8ec7",
         "type": "tab",
         "label": "Lab3_exercise2",
         "disabled": true,
@@ -8,25 +8,25 @@
         "env": []
     },
     {
-        "id": "ddffcfc53ee3bd9c",
+        "id": "54418d6ee1046bea",
         "type": "serial in",
-        "z": "0e31d2eccaea29e9",
+        "z": "4a48d8ab1d6e8ec7",
         "name": "Temperature Sensor",
         "serial": "47217533c577d375",
         "x": 130,
         "y": 120,
         "wires": [
             [
-                "392fb065ce623c52",
-                "0a0a93879ffa14c4",
-                "bb89b0bc9fc8eb89"
+                "7288a277cddccb35",
+                "88cb3e3e4252b52b",
+                "6a3d9455fd6c2ea5"
             ]
         ]
     },
     {
-        "id": "392fb065ce623c52",
+        "id": "7288a277cddccb35",
         "type": "debug",
-        "z": "0e31d2eccaea29e9",
+        "z": "4a48d8ab1d6e8ec7",
         "name": "Serial-Input String",
         "active": true,
         "tosidebar": true,
@@ -41,11 +41,11 @@
         "wires": []
     },
     {
-        "id": "0a0a93879ffa14c4",
+        "id": "88cb3e3e4252b52b",
         "type": "ui_gauge",
-        "z": "0e31d2eccaea29e9",
+        "z": "4a48d8ab1d6e8ec7",
         "name": "",
-        "group": "ee0a24d8b3e3bcc6",
+        "group": "6ad1775ebdee8236",
         "order": 1,
         "width": "0",
         "height": "0",
@@ -69,11 +69,11 @@
         "wires": []
     },
     {
-        "id": "bb89b0bc9fc8eb89",
+        "id": "6a3d9455fd6c2ea5",
         "type": "ui_chart",
-        "z": "0e31d2eccaea29e9",
+        "z": "4a48d8ab1d6e8ec7",
         "name": "",
-        "group": "ee0a24d8b3e3bcc6",
+        "group": "6ad1775ebdee8236",
         "order": 2,
         "width": "0",
         "height": "0",
@@ -116,7 +116,7 @@
         "id": "47217533c577d375",
         "type": "serial-port",
         "name": "Serial_In",
-        "serialport": "/dev/tty.usbmodem11201",
+        "serialport": "COM3",
         "serialbaud": "9600",
         "databits": "8",
         "parity": "none",
@@ -133,10 +133,10 @@
         "responsetimeout": "10000"
     },
     {
-        "id": "ee0a24d8b3e3bcc6",
+        "id": "6ad1775ebdee8236",
         "type": "ui_group",
         "name": "Real Time Temperature",
-        "tab": "1124135d00437285",
+        "tab": "aa42ee4fb8892683",
         "order": 1,
         "disp": true,
         "width": "6",
@@ -144,7 +144,7 @@
         "className": ""
     },
     {
-        "id": "1124135d00437285",
+        "id": "aa42ee4fb8892683",
         "type": "ui_tab",
         "name": "Temperature",
         "icon": "dashboard",

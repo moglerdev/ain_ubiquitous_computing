@@ -1,16 +1,16 @@
 [
     {
-        "id": "c8ec8db3a0c79615",
+        "id": "2707ed6453961df7",
         "type": "tab",
-        "label": "Lab3_exercise1_sync",
+        "label": "Lab3_exercise1",
         "disabled": true,
         "info": "",
         "env": []
     },
     {
-        "id": "f74259f94cd568e5",
+        "id": "307035c20177be07",
         "type": "ui_switch",
-        "z": "c8ec8db3a0c79615",
+        "z": "2707ed6453961df7",
         "name": "",
         "label": "LED",
         "tooltip": "",
@@ -24,52 +24,121 @@
         "topicType": "msg",
         "style": "",
         "onvalue": "1",
-        "onvalueType": "str",
+        "onvalueType": "num",
         "onicon": "",
         "oncolor": "",
         "offvalue": "0",
-        "offvalueType": "str",
+        "offvalueType": "num",
         "officon": "",
         "offcolor": "",
         "animate": false,
         "className": "",
-        "x": 450,
-        "y": 60,
-        "wires": [
-            [
-                "e62b9ba66a5f3cae",
-                "53ec3bb0c662f9d2"
-            ]
-        ]
-    },
-    {
-        "id": "53ec3bb0c662f9d2",
-        "type": "serial out",
-        "z": "c8ec8db3a0c79615",
-        "name": "Serial_Out",
-        "serial": "62f9f371d6641935",
-        "x": 610,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "84e353cb18255012",
-        "type": "serial in",
-        "z": "c8ec8db3a0c79615",
-        "name": "Serial_In",
-        "serial": "47217533c577d375",
-        "x": 100,
+        "x": 130,
         "y": 80,
         "wires": [
             [
-                "c463cbbd2bb51804"
+                "714c11ca9e2675e8"
             ]
         ]
     },
     {
-        "id": "e62b9ba66a5f3cae",
+        "id": "714c11ca9e2675e8",
+        "type": "serial out",
+        "z": "2707ed6453961df7",
+        "name": "Serial_Out",
+        "serial": "62f9f371d6641935",
+        "x": 370,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "6b8094e823f13a53",
+        "type": "inject",
+        "z": "2707ed6453961df7",
+        "name": "1",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "714c11ca9e2675e8",
+                "3f8cc049cfccdd07"
+            ]
+        ]
+    },
+    {
+        "id": "842f33f10d75872c",
+        "type": "inject",
+        "z": "2707ed6453961df7",
+        "name": "0",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "714c11ca9e2675e8",
+                "3f8cc049cfccdd07"
+            ]
+        ]
+    },
+    {
+        "id": "3f8cc049cfccdd07",
+        "type": "debug",
+        "z": "2707ed6453961df7",
+        "name": "SEND",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 310,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "e84bea14549006d6",
+        "type": "serial in",
+        "z": "2707ed6453961df7",
+        "name": "Serial_In",
+        "serial": "47217533c577d375",
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "59198aa5141e36f1",
+                "91e34a4714bb7250"
+            ]
+        ]
+    },
+    {
+        "id": "735a049ac9d68464",
         "type": "ui_led",
-        "z": "c8ec8db3a0c79615",
+        "z": "2707ed6453961df7",
         "order": 1,
         "group": "404b654bd34371a7",
         "width": 0,
@@ -88,14 +157,31 @@
         "shape": "circle",
         "showGlow": true,
         "name": "",
-        "x": 590,
-        "y": 60,
+        "x": 510,
+        "y": 200,
         "wires": []
     },
     {
-        "id": "c463cbbd2bb51804",
+        "id": "91e34a4714bb7250",
+        "type": "debug",
+        "z": "2707ed6453961df7",
+        "name": "IN",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 310,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "59198aa5141e36f1",
         "type": "function",
-        "z": "c8ec8db3a0c79615",
+        "z": "2707ed6453961df7",
         "name": "strip_new_line",
         "func": "msg.payload = msg.payload.trim();\nreturn msg;",
         "outputs": 1,
@@ -104,12 +190,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 260,
-        "y": 80,
+        "x": 340,
+        "y": 200,
         "wires": [
             [
-                "f74259f94cd568e5",
-                "53ec3bb0c662f9d2"
+                "735a049ac9d68464"
             ]
         ]
     },
@@ -128,7 +213,7 @@
         "id": "62f9f371d6641935",
         "type": "serial-port",
         "name": "Serial_Out",
-        "serialport": "/dev/tty.usbmodem11201",
+        "serialport": "COM3",
         "serialbaud": "9600",
         "databits": "8",
         "parity": "none",
@@ -148,7 +233,7 @@
         "id": "47217533c577d375",
         "type": "serial-port",
         "name": "Serial_In",
-        "serialport": "/dev/tty.usbmodem11201",
+        "serialport": "COM3",
         "serialbaud": "9600",
         "databits": "8",
         "parity": "none",

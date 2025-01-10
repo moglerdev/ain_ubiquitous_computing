@@ -1,5 +1,6 @@
-const int BUTTON_PIN = 2;
-const int LED_PIN = 13;
+#define BUTTON_PIN 2
+#define LED_PIN 13
+
 int oldButtonState;
 
 void setup() {

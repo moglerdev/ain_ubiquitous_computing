@@ -7,9 +7,10 @@ services:
       - node_red_data:/data
     env_file:
       - .env
-    stdin_open: true # Keep STDIN open
-    tty: true        # Allocate a pseudo-TTY
-
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    privileged: true
+    user: root
 
 volumes:
   node_red_data:
