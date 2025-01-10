@@ -176,6 +176,8 @@ First, the serial data is read using the **serial out node** in Node-RED. To min
 
 In DataCake, the first step is to create a UI, which requires the creation of a device. DataCake offers a variety of device types, and for this task, the `API` device type was chosen to subscribe to MQTT topics.
 
+![x|333](./assets/Ex3_Datacake_MQTT_Conf.jpg)
+
 After creating the device, some configuration steps are necessary. You need to set up a new MQTT server to allow DataCake to connect. The same connection values and credentials used in Node-RED were applied here. However, DataCake only requires subscription permissions. For added security in production environments, it's recommended to use separate credentials from Node-RED with only subscription permissions.
 
 ```js
